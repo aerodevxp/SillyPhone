@@ -6,7 +6,7 @@ Two-way SMS extension for SillyTavern. Characters can drop hidden SMS markers in
 
 ```bash
 cd /path/to/SillyTavern/public/scripts/extensions/third-party/
-git clone https://github.com/envyk-dev/SillyPhone.git SillyPhone
+git clone https://github.com/aerodevxp/SillyPhone.git SillyPhone
 ```
 
 Reload SillyTavern and enable SillyPhone in the Extensions panel.
