@@ -205,21 +205,35 @@ export function scrollToBottom() {
 }
 
 export async function playCharBurst(msgs, ts, attachment, timing, isoTime = null) {
-    if (!modalEl || !isOpen()) {
-        // If modal is not open, just refresh to show new messages
-        refresh();
-        return;
-    }
+    if (!modalEl || !isOpen()) return;
+    
+    // Always refresh the view first to ensure we're in sync
+    refresh();
+    
     if (manageMode) {
-        refresh();
         return;
     }
-    // Snap to bottom before the sequenced reveal starts so the user never
+    
+    try {
+        // Snap to bottom before the sequenced reveal starts so the user never
         // misses the first typing dots / bubble.
-    scrollToBottom();
-    await playBubbles(msgs, messagesEl, 'char', ts, attachment ?? null, timing ?? null, isoTime);
-    // Ensure the final state is visible
-    scrollToBottom();
+        scrollToBottom();
+        
+        if (timing && timing.length > 0) {
+            await playBubbles(msgs, messagesEl, 'char', ts, attachment ?? null, timing ?? null, isoTime);
+        } else {
+            // Fallback to immediate display if no timing data
+            appendBurst({ from: 'char', msgs, ts, attachment: attachment ?? null, isoTime: isoTime ?? null });
+        }
+        
+        // Ensure final state is visible
+        scrollToBottom();
+    } catch (error) {
+        console.error('[SillyPhone] Error in playCharBurst:', error);
+        // Fallback to immediate display on error
+        appendBurst({ from: 'char', msgs, ts, attachment: attachment ?? null, isoTime: isoTime ?? null });
+        scrollToBottom();
+    }
 }
 
 // ---------- Attachment staging ----------

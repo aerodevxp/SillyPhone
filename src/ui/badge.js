@@ -7,7 +7,18 @@ let onClickHandler = null;
 
 export function mount(onClick) {
     onClickHandler = onClick;
-    if (badgeEl) return;
+    
+    // Check if badge already exists
+    let existing = document.getElementById('sillyphone-badge');
+    if (existing) {
+        badgeEl = existing;
+        // Reattach event listener
+        badgeEl.removeEventListener('click', handleClick);
+        badgeEl.addEventListener('click', handleClick);
+        refresh();
+        return;
+    }
+    
     badgeEl = document.createElement('button');
     badgeEl.id = 'sillyphone-badge';
     badgeEl.setAttribute('aria-label', 'Open phone, 0 unread');
@@ -20,18 +31,36 @@ export function mount(onClick) {
         </span>
         <span class="sp-badge-count" aria-hidden="true">0</span>
     `;
-    badgeEl.addEventListener('click', () => {
+    
+    function handleClick() {
         if (onClickHandler) onClickHandler();
-    });
-    // Append to <html> to escape any body-level transforms that break position:fixed.
-    // But also ensure it's visible by checking if it's already in the DOM
-    const existing = document.getElementById('sillyphone-badge');
-    if (!existing) {
-        (document.documentElement || document.body).appendChild(badgeEl);
-    } else {
-        badgeEl = existing;
     }
+    
+    badgeEl.addEventListener('click', handleClick);
+    
+    // Try multiple attachment points to ensure visibility
+    const attachPoints = [
+        document.documentElement,
+        document.body,
+        document.getElementById('main_container') || document.body
+    ];
+    
+    for (const point of attachPoints) {
+        if (point) {
+            point.appendChild(badgeEl);
+            break;
+        }
+    }
+    
     refresh();
+    
+    // Force visibility check
+    setTimeout(() => {
+        if (badgeEl) {
+            badgeEl.style.display = 'flex';
+            badgeEl.style.visibility = 'visible';
+        }
+    }, 100);
 }
 
 export function refresh() {
