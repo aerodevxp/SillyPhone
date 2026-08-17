@@ -7,3 +7,5 @@ node_modules/
 docs/
 MANUAL-TESTS.md
 tests
+dump.sh
+file_dump.txt

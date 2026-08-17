@@ -7,7 +7,13 @@ export function listBursts(chat) {
     for (let i = 0; i < chat.length; i++) {
         const tag = chat[i]?.extra?.sillyphone;
         if (!tag || !Array.isArray(tag.msgs)) continue;
-        const entry = { chatIdx: i, from: tag.from, msgs: tag.msgs.slice(), ts: tag.ts };
+        const entry = { 
+            chatIdx: i, 
+            from: tag.from, 
+            msgs: tag.msgs.slice(), 
+            ts: tag.ts,
+            isoTime: tag.time // Include ISO time if available
+        };
         if (tag.attachment) entry.attachment = { ...tag.attachment };
         out.push(entry);
     }
@@ -35,7 +41,7 @@ export function formatBurstMes(msgs, attachment) {
 // Accepts optional attachment: { kind: 'image'|'video', description: string }.
 // The `image` slot is reserved for a future upload feature; this patch
 // always stores null there regardless of what callers pass.
-export function buildBurstMessage({ from, msgs, ts, charName, userName, attachment }) {
+export function buildBurstMessage({ from, msgs, ts, charName, userName, attachment, time }) {
     const finalTs = ts ?? Date.now();
     const isUser = from === 'user';
     const cleanMsgs = Array.isArray(msgs) ? msgs.slice() : [];
@@ -52,6 +58,7 @@ export function buildBurstMessage({ from, msgs, ts, charName, userName, attachme
                 msgs: cleanMsgs,
                 ts: finalTs,
                 ...(att ? { attachment: att } : {}),
+                ...(time ? { time } : {}), // Include time if provided
             },
         },
     };

@@ -142,9 +142,9 @@ async function handleMessageReceived(messageIdx) {
 
     if (modal.isOpen()) {
         if (parsed.timing) {
-            await modal.playCharBurst(parsed.msgs, ts, parsed.attachment ?? null, parsed.timing);
+            await modal.playCharBurst(parsed.msgs, ts, parsed.attachment ?? null, parsed.timing, parsed.time ?? null);
         } else {
-            modal.appendBurst({ from: 'char', msgs: parsed.msgs, ts, attachment: parsed.attachment ?? null });
+            modal.appendBurst({ from: 'char', msgs: parsed.msgs, ts, attachment: parsed.attachment ?? null, isoTime: parsed.time ?? null });
         }
     } else {
         const unreadBump = parsed.msgs.length + (parsed.attachment ? 1 : 0);

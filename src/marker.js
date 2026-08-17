@@ -82,21 +82,22 @@ export function parse(text) {
             }
         }
         if (!attachment) attachment = normalizeAttachment(obj.attachment);
-        time = obj.time
+        // Capture the time field
+        if (obj.time) {
+            time = obj.time;
+        }
     }
     if (msgs.length === 0 && !attachment) {
         // Fallback: long-context drift sometimes makes the model output the
         // display format directly instead of a hidden marker. Treat a bare
-        // "[SMS]\n- a\n- b" block as if it were a marker.
+        // "[SMS]..." block as if it were a marker.
         const leaked = parseLeakedBlock(text);
         if (leaked) return leaked;
         return null;
     }
     const result = { msgs };
     if (attachment) result.attachment = attachment;
-    if (time) {
-        result.time = time;
-    }else {result.time = Temporal.Now.instant().toString();}
+    if (time) result.time = time;  // Include time in result
     if (hasAnyTiming) result.timing = timing.map(t => t || {});
     return result;
 }
