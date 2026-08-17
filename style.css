@@ -74,7 +74,7 @@
 
 @media (min-width: 601px) and (max-width: 1024px) {
     #sillyphone-badge {
-        bottom: 20px !important;
+        bottom: -80px !important;
         right: 20px !important;
     }
 }

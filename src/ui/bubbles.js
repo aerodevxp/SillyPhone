@@ -170,6 +170,9 @@ export function openTurn(from, ts, containerEl, attachment, isoTime = null) {
     t.className = `sp-turn sp-turn-${from === 'user' ? 'user' : 'char'}`;
     t.dataset.ts = String(ts);
     if (isoTime) t.dataset.isoTime = isoTime;
+    const att = attachmentPlaceholder(attachment, from);
+    if (att) t.appendChild(att);
+    containerEl.appendChild(t);
     return t;
 }
 
