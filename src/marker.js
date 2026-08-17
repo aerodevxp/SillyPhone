@@ -64,6 +64,7 @@ export function parse(text) {
     const timing = [];
     let hasAnyTiming = false;
     let attachment = null;
+    let time = null;
     let match;
     MARKER_RE.lastIndex = 0;
     while ((match = MARKER_RE.exec(text)) !== null) {
@@ -81,6 +82,7 @@ export function parse(text) {
             }
         }
         if (!attachment) attachment = normalizeAttachment(obj.attachment);
+        time = obj.time
     }
     if (msgs.length === 0 && !attachment) {
         // Fallback: long-context drift sometimes makes the model output the
@@ -92,6 +94,9 @@ export function parse(text) {
     }
     const result = { msgs };
     if (attachment) result.attachment = attachment;
+    if (time) {
+        result.time = time;
+    }else {result.time = Temporal.Now.instant().toString();}
     if (hasAnyTiming) result.timing = timing.map(t => t || {});
     return result;
 }

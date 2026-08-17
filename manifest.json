@@ -6,9 +6,9 @@
   "dependencies": [],
   "js": "index.js",
   "css": "style.css",
-  "author": "envyk-dev",
+  "author": "envyk-dev + aerodevxp",
   "version": "0.4.0",
-  "homePage": "https://github.com/envyk-dev/SillyPhone",
+  "homePage": "https://github.com/aerodevxp/SillyPhone",
   "auto_update": true,
   "minimum_client_version": "",
   "i18n": {}

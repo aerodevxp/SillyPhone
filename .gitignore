@@ -6,3 +6,4 @@ node_modules/
 .planning/
 docs/
 MANUAL-TESTS.md
+tests

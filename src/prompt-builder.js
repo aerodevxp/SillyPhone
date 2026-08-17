@@ -6,14 +6,14 @@
 export const DEFAULT_FLOW_A_INSTRUCTIONS = `# Phone / SMS system (SillyPhone extension)
 
 You can send the user a text message by appending ONE hidden marker at the very end of your response:
-<!--Phone:{"msgs":["text1","text2"]}-->
+<!--Phone:{"msgs":["text1","text2"], "time":"isotime"}-->
 
 ## Output format ≠ history format
 
 The marker above is how you SEND a new message. The "[SMS]" blocks you see earlier in the chat history are how *past* SMS are DISPLAYED — they are already-delivered, not a template for you to imitate. Writing a "[SMS]" block yourself does NOT send a message; only the hidden marker does.
 
 DO (this sends a message):
-<!--Phone:{"msgs":["hey","u up"]}-->
+<!--Phone:{"msgs":["hey","u up"], "time":"2026-08-16T23:54:08.731Z"}-->
 
 DON'T (this is just prose — no message is delivered):
 [SMS]
@@ -24,12 +24,14 @@ You may also attach an image or video to the same marker. The attachment is desc
 <!--Phone:{"attachment":{"kind":"image","description":"a photo of {{char}} holding up a coffee mug, slightly out of focus"},"msgs":["morning"]}-->
 
 You may also control each bubble's timing for a realistic texting cadence. Instead of a plain string, pass an object per bubble with optional delay and typeDuration (both in milliseconds):
-<!--Phone:{"msgs":[{"text":"hey","delay":0,"typeDuration":400},{"text":"u free later?","delay":600,"typeDuration":1100}]}-->
+<!--Phone:{"msgs":[{"text":"hey","delay":0,"typeDuration":400},{"text":"u free later?","delay":600,"typeDuration":1100}], "time":"2026-08-16T23:54:08.731Z"}-->
 - delay: pause BEFORE typing starts for this bubble. Bigger values simulate thinking, hesitation, or {{char}} being busy. For the first bubble, this is the gap after the user's last message.
 - typeDuration: how long the typing indicator shows before the bubble appears. Roughly proportional to message length, but vary it — a short message can take a moment if {{char}} is choosing words; a long one can land fast if {{char}} is rapid-fire or upset.
 - Realistic numbers: typeDuration 500–3000ms feels human (sub-200ms is robotic); delay 0–800ms is rapid-fire, 1500–4000ms is reflective, 5000+ reads as busy or hesitant. Vary within a single burst — don't make every bubble the same cadence.
 - Plain strings still work ("hey") for instant defaults. Mix both forms freely. Use timing when the moment calls for pacing; omit it when cadence doesn't matter.
-
+Time Value:
+Each message batch/phone JSON object should have a time value. That is the time at which {{char}} starts sending the messages.
+It has to be presented in a ISO-like format like so: 2026-08-16T23:54:08.731Z
 Example exchange (illustrative only — the names are placeholders, not real characters):
 
 Prior [SMS] from the user (already in the chat):
@@ -38,7 +40,7 @@ Prior [SMS] from the user (already in the chat):
 - i cant sleep lol
 
 A natural reply would look like:
-<!--Phone:{"msgs":[{"text":"yeah same","delay":1400,"typeDuration":900},{"text":"wats keeping u up","delay":500,"typeDuration":1300},{"text":"everything ok?","delay":2200,"typeDuration":1100}]}-->
+<!--Phone:{"msgs":[{"text":"yeah same","delay":1400,"typeDuration":900},{"text":"wats keeping u up","delay":500,"typeDuration":1300},{"text":"everything ok?","delay":2200,"typeDuration":1100}], "time":"2026-08-16T23:54:08.731Z"}-->
 
 Notice: the first bubble has a short lead-in (picking up the phone), the second fires quickly after (rapid-fire follow-up), the third has a longer pause before typing (a moment of concern before asking). Messages are short, lowercase, a little sloppy — like real texting. The typing durations roughly track message length but aren't mechanical.
 
