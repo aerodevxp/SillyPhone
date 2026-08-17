@@ -22,10 +22,10 @@ function defaultTypeDuration(text) {
 function resolveTiming(text, t, isFirst) {
     const delay = Number.isFinite(t?.delay) && t.delay >= 0
         ? t.delay
-        : (isFirst ? 0 : BETWEEN_BUBBLES_MS);
+        : (isFirst ? 0 : BETWEEN_BUBBLES_MS);  // 0 for first bubble, 400ms gap otherwise
     const typeDuration = Number.isFinite(t?.typeDuration) && t.typeDuration >= 0
         ? t.typeDuration
-        : defaultTypeDuration(text);
+        : defaultTypeDuration(text);  // 400ms + 40ms/char, max 3000ms
     return { delay, typeDuration };
 }
 

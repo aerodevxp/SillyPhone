@@ -141,12 +141,7 @@ async function handleMessageReceived(messageIdx) {
     const ts = Date.now();
 
     if (modal.isOpen()) {
-        if (parsed.timing) {
-            await modal.playCharBurst(parsed.msgs, ts, parsed.attachment ?? null, parsed.timing, parsed.time ?? null);
-        } else {
-            modal.appendBurst({ from: 'char', msgs: parsed.msgs, ts, attachment: parsed.attachment ?? null, isoTime: parsed.time ?? null });
-        }
-        // Don't call refresh() here - playCharBurst handles it
+        await modal.playCharBurst(parsed.msgs, ts, parsed.attachment ?? null, parsed.timing ?? null, parsed.time ?? null);
     } else {
         const unreadBump = parsed.msgs.length + (parsed.attachment ? 1 : 0);
         storage.incUnread(unreadBump);
