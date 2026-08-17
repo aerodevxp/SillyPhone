@@ -205,35 +205,26 @@ export function scrollToBottom() {
 }
 
 export async function playCharBurst(msgs, ts, attachment, timing, isoTime = null) {
-    if (!modalEl || !isOpen()) return;
-    
-    // Always refresh the view first to ensure we're in sync
-    refresh();
-    
-    if (manageMode) {
+    if (!modalEl || !isOpen()) {
+        // If modal is not open, just refresh to show new messages
+        refresh();
         return;
     }
     
-    try {
-        // Snap to bottom before the sequenced reveal starts so the user never
-        // misses the first typing dots / bubble.
-        scrollToBottom();
-        
-        if (timing && timing.length > 0) {
-            await playBubbles(msgs, messagesEl, 'char', ts, attachment ?? null, timing ?? null, isoTime);
-        } else {
-            // Fallback to immediate display if no timing data
-            appendBurst({ from: 'char', msgs, ts, attachment: attachment ?? null, isoTime: isoTime ?? null });
-        }
-        
-        // Ensure final state is visible
-        scrollToBottom();
-    } catch (error) {
-        console.error('[SillyPhone] Error in playCharBurst:', error);
-        // Fallback to immediate display on error
-        appendBurst({ from: 'char', msgs, ts, attachment: attachment ?? null, isoTime: isoTime ?? null });
-        scrollToBottom();
+    if (manageMode) {
+        refresh();
+        return;
     }
+    
+    // Snap to bottom before the sequenced reveal starts so the user never
+    // misses the first typing dots / bubble.
+    scrollToBottom();
+    
+    // Call playBubbles WITHOUT refreshing first - the function handles its own appending
+    await playBubbles(msgs, messagesEl, 'char', ts, attachment ?? null, timing ?? null, isoTime);
+    
+    // Ensure final state is visible after animation completes
+    scrollToBottom();
 }
 
 // ---------- Attachment staging ----------

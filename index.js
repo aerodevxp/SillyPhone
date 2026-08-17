@@ -141,15 +141,12 @@ async function handleMessageReceived(messageIdx) {
     const ts = Date.now();
 
     if (modal.isOpen()) {
-        // Always ensure we show the messages, regardless of timing
-        if (parsed.timing && parsed.timing.length > 0) {
+        if (parsed.timing) {
             await modal.playCharBurst(parsed.msgs, ts, parsed.attachment ?? null, parsed.timing, parsed.time ?? null);
         } else {
-            // Fallback to immediate display if no timing
             modal.appendBurst({ from: 'char', msgs: parsed.msgs, ts, attachment: parsed.attachment ?? null, isoTime: parsed.time ?? null });
         }
-        // Force scroll to bottom to ensure visibility
-        modal.scrollToBottom();
+        // Don't call refresh() here - playCharBurst handles it
     } else {
         const unreadBump = parsed.msgs.length + (parsed.attachment ? 1 : 0);
         storage.incUnread(unreadBump);
