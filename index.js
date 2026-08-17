@@ -144,6 +144,7 @@ async function handleMessageReceived(messageIdx) {
         if (parsed.timing) {
             await modal.playCharBurst(parsed.msgs, ts, parsed.attachment ?? null, parsed.timing, parsed.time ?? null);
         } else {
+            // Make sure we append the burst even if there's no timing
             modal.appendBurst({ from: 'char', msgs: parsed.msgs, ts, attachment: parsed.attachment ?? null, isoTime: parsed.time ?? null });
         }
     } else {

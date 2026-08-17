@@ -24,7 +24,13 @@ export function mount(onClick) {
         if (onClickHandler) onClickHandler();
     });
     // Append to <html> to escape any body-level transforms that break position:fixed.
-    (document.documentElement || document.body).appendChild(badgeEl);
+    // But also ensure it's visible by checking if it's already in the DOM
+    const existing = document.getElementById('sillyphone-badge');
+    if (!existing) {
+        (document.documentElement || document.body).appendChild(badgeEl);
+    } else {
+        badgeEl = existing;
+    }
     refresh();
 }
 

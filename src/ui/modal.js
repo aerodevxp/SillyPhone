@@ -204,16 +204,22 @@ export function scrollToBottom() {
     });
 }
 
-export async function playCharBurst(msgs, ts, attachment, timing) {
-    if (!modalEl || !isOpen()) return;
+export async function playCharBurst(msgs, ts, attachment, timing, isoTime = null) {
+    if (!modalEl || !isOpen()) {
+        // If modal is not open, just refresh to show new messages
+        refresh();
+        return;
+    }
     if (manageMode) {
         refresh();
         return;
     }
     // Snap to bottom before the sequenced reveal starts so the user never
-    // misses the first typing dots / bubble.
+        // misses the first typing dots / bubble.
     scrollToBottom();
-    await playBubbles(msgs, messagesEl, 'char', ts, attachment ?? null, timing ?? null);
+    await playBubbles(msgs, messagesEl, 'char', ts, attachment ?? null, timing ?? null, isoTime);
+    // Ensure the final state is visible
+    scrollToBottom();
 }
 
 // ---------- Attachment staging ----------
